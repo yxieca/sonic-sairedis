@@ -1,6 +1,6 @@
 #include "sai_redis.h"
 #include "sairedis.h"
-#include "meta/saiserialize.h"
+#include "meta/sai_serialize.h"
 #include "meta/saiattributelist.h"
 
 REDIS_GENERIC_QUAD_ENTRY(ROUTE_ENTRY,route_entry);
@@ -38,7 +38,7 @@ sai_status_t sai_bulk_create_route_entry(
         _In_ const sai_route_entry_t *route_entry,
         _In_ const uint32_t *attr_count,
         _In_ const sai_attribute_t *const *attr_list,
-        _In_ sai_bulk_op_type_t type,
+        _In_ sai_bulk_op_error_mode_t mode,
         _Out_ sai_status_t *object_statuses)
 {
     std::lock_guard<std::mutex> lock(g_apimutex);
@@ -73,16 +73,16 @@ sai_status_t sai_bulk_create_route_entry(
         return SAI_STATUS_INVALID_PARAMETER;
     }
 
-    switch (type)
+    switch (mode)
     {
-        case SAI_BULK_OP_TYPE_STOP_ON_ERROR:
-        case SAI_BULK_OP_TYPE_INGORE_ERROR:
+        case SAI_BULK_OP_ERROR_MODE_STOP_ON_ERROR:
+        case SAI_BULK_OP_ERROR_MODE_IGNORE_ERROR:
              // ok
              break;
 
         default:
 
-             SWSS_LOG_ERROR("invalid bulk operation type %d", type);
+             SWSS_LOG_ERROR("invalid bulk operation mode %d", mode);
 
              return SAI_STATUS_INVALID_PARAMETER;
     }
@@ -127,7 +127,7 @@ sai_status_t sai_bulk_create_route_entry(
                     idx,
                     serialized_object_ids[idx].c_str());
 
-            if (type == SAI_BULK_OP_TYPE_STOP_ON_ERROR)
+            if (mode == SAI_BULK_OP_ERROR_MODE_STOP_ON_ERROR)
             {
                 SWSS_LOG_NOTICE("stop on error since previous operation failed");
                 break;
@@ -150,7 +150,7 @@ sai_status_t sai_bulk_create_route_entry(
 sai_status_t sai_bulk_remove_route_entry(
         _In_ uint32_t object_count,
         _In_ const sai_route_entry_t *route_entry,
-        _In_ sai_bulk_op_type_t type,
+        _In_ sai_bulk_op_error_mode_t mode,
         _Out_ sai_status_t *object_statuses)
 {
     std::lock_guard<std::mutex> lock(g_apimutex);
@@ -194,7 +194,7 @@ sai_status_t sai_bulk_set_route_entry_attribute(
         _In_ uint32_t object_count,
         _In_ const sai_route_entry_t *route_entry,
         _In_ const sai_attribute_t *attr_list,
-        _In_ sai_bulk_op_type_t type,
+        _In_ sai_bulk_op_error_mode_t mode,
         _Out_ sai_status_t *object_statuses)
 {
     std::lock_guard<std::mutex> lock(g_apimutex);
@@ -222,17 +222,16 @@ sai_status_t sai_bulk_set_route_entry_attribute(
         return SAI_STATUS_INVALID_PARAMETER;
     }
 
-    switch (type)
+    switch (mode)
     {
-        case SAI_BULK_OP_TYPE_STOP_ON_ERROR:
-        case SAI_BULK_OP_TYPE_INGORE_ERROR:
+        case SAI_BULK_OP_ERROR_MODE_STOP_ON_ERROR:
+        case SAI_BULK_OP_ERROR_MODE_IGNORE_ERROR:
              // ok
              break;
 
         default:
 
-             SWSS_LOG_ERROR("invalid bulk operation type %d", type);
-
+             SWSS_LOG_ERROR("invalid bulk operation mode %d", mode);
              return SAI_STATUS_INVALID_PARAMETER;
     }
 
@@ -275,7 +274,7 @@ sai_status_t sai_bulk_set_route_entry_attribute(
                     idx,
                     serialized_object_ids[idx].c_str());
 
-            if (type == SAI_BULK_OP_TYPE_STOP_ON_ERROR)
+            if (mode == SAI_BULK_OP_ERROR_MODE_STOP_ON_ERROR)
             {
                 SWSS_LOG_NOTICE("stop on error since previous operation failed");
                 break;
@@ -299,7 +298,7 @@ sai_status_t sai_bulk_get_route_entry_attribute(
         _In_ const sai_route_entry_t *route_entry,
         _In_ const uint32_t *attr_count,
         _Inout_ sai_attribute_t **attr_list,
-        _In_ sai_bulk_op_type_t type,
+        _In_ sai_bulk_op_error_mode_t mode,
         _Out_ sai_status_t *object_statuses)
 {
     std::lock_guard<std::mutex> lock(g_apimutex);
@@ -308,3 +307,4 @@ sai_status_t sai_bulk_get_route_entry_attribute(
 
     return SAI_STATUS_NOT_IMPLEMENTED;
 }
+
