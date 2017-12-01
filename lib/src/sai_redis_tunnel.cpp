@@ -23,7 +23,7 @@ REDIS_GENERIC_GET_STATS(TUNNEL, tunnel);
 const sai_tunnel_api_t redis_tunnel_api = {
     REDIS_GENERIC_QUAD_API(tunnel_map)
     REDIS_GENERIC_QUAD_API(tunnel)
-    
+
     redis_get_tunnel_stats,
     redis_clear_tunnel_stats,
 
