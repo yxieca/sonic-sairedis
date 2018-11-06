@@ -719,6 +719,7 @@ void check_notifications_pointers(
 
         if (meta->attrvaluetype != SAI_ATTR_VALUE_TYPE_POINTER)
         {
+            SWSS_LOG_NOTICE("=== Ignoring id %d (not pointer type)", attr.id);
             continue;
         }
 
@@ -735,32 +736,39 @@ void check_notifications_pointers(
              * If pointer is NULL, then fine, let it be.
              */
 
+            SWSS_LOG_NOTICE("=== Ignoring id %d (null pointer)", attr.id);
             continue;
         }
 
         switch (attr.id)
         {
             case SAI_SWITCH_ATTR_SWITCH_STATE_CHANGE_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_SWITCH_STATE_CHANGE_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_switch_state_change_ntf;
                 break;
 
             case SAI_SWITCH_ATTR_SHUTDOWN_REQUEST_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_SHUTDOWN_REQUEST_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_switch_shutdown_request_ntf;
                 break;
 
             case SAI_SWITCH_ATTR_FDB_EVENT_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_FDB_EVENT_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_fdb_event_ntf;
                 break;
 
             case SAI_SWITCH_ATTR_PORT_STATE_CHANGE_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_PORT_STATE_CHANGE_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_port_state_change_ntf;
                 break;
 
             case SAI_SWITCH_ATTR_PACKET_EVENT_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_PACKET_EVENT_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_packet_event_ntf;
                 break;
 
             case SAI_SWITCH_ATTR_QUEUE_PFC_DEADLOCK_NOTIFY:
+                SWSS_LOG_NOTICE("=== Updating id %d (SAI_SWITCH_ATTR_QUEUE_PFC_DEADLOCK_NOTIFY)", attr.id);
                 attr.value.ptr = (void*)on_queue_deadlock_ntf;
                 break;
 

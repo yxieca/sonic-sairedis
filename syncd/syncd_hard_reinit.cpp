@@ -440,6 +440,7 @@ void processSwitches()
 
         g_translatedV2R[switch_vid] = switch_rid;
         g_translatedR2V[switch_rid] = switch_vid;
+        SWSS_LOG_NOTICE("=== Switch rid 0x%lx vid 0x%lx", switch_rid, switch_vid);
 
         auto sw = switches[switch_vid] = std::make_shared<SaiSwitch>(switch_vid, switch_rid);
 
@@ -1267,7 +1268,10 @@ void performWarmRestart()
         switch_attrs[i+1].value.ptr = (void *)1; // any non-null pointer
     }
     check_notifications_pointers((uint32_t)NELMS(switch_attrs), &switch_attrs[0]);
+    SWSS_LOG_NOTICE("=== Starting creating switch");
     sai_status_t status = sai_metadata_sai_switch_api->create_switch(&switch_rid, (uint32_t)NELMS(switch_attrs), &switch_attrs[0]);
+    SWSS_LOG_NOTICE("=== Finished creating switch: nattr %zd", NELMS(switch_attrs));
+    SWSS_LOG_NOTICE("=== Switch rid 0x%lx vid 0x%lx", switch_rid, switch_vid);
 
     if (status != SAI_STATUS_SUCCESS)
     {
@@ -1301,5 +1305,7 @@ void performWarmRestart()
 
     gSwitchId = g_switch_rid;
 
+    SWSS_LOG_NOTICE("=== Starting diagnostic shell");
     startDiagShell();
+    SWSS_LOG_NOTICE("=== Started  diagnostic shell");
 }

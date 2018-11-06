@@ -7083,13 +7083,13 @@ void executeOperationsOnAsic(
                 const std::string &key = kfvKey(*op.op);
                 const std::string &opp = kfvOp(*op.op);
 
-                SWSS_LOG_WARN("%s: %s", opp.c_str(), key.c_str());
+                SWSS_LOG_WARN("=== %s: %s", opp.c_str(), key.c_str());
 
                 const auto &values = kfvFieldsValues(*op.op);
 
                 for (auto v: values)
                 {
-                    SWSS_LOG_WARN("- %s %s", fvField(v).c_str(), fvValue(v).c_str());
+                    SWSS_LOG_WARN("=== - %s %s", fvField(v).c_str(), fvValue(v).c_str());
                 }
             }
 

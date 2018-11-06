@@ -1251,6 +1251,8 @@ sai_status_t handle_generic(
                         on_switch_create(switch_id);
                         gSwitchId = real_object_id;
                         SWSS_LOG_NOTICE("Initialize gSwitchId with ID = 0x%lx", gSwitchId);
+                        SWSS_LOG_NOTICE("=== Switch rid %s vid %s",
+                                        str_rid.c_str(), str_vid.c_str());
                     }
                 }
 
@@ -1937,6 +1939,7 @@ void on_switch_create_in_init_view(
         sai_object_id_t switch_rid;
 
         sai_status_t status = sai_metadata_sai_switch_api->create_switch(&switch_rid, attr_count, attr_list);
+        SWSS_LOG_NOTICE("=== Switch rid 0x%lx vid 0x%lx", switch_rid, switch_vid);
 
         if (status != SAI_STATUS_SUCCESS)
         {
