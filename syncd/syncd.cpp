@@ -112,12 +112,14 @@ bool isInitViewMode()
 
 bool g_veryFirstRun = false;
 
-void exit_and_notify(int status) __attribute__ ((__noreturn__));
+// void exit_and_notify(int status) __attribute__ ((__noreturn__));
 
 void exit_and_notify(
         _In_ int status)
 {
     SWSS_LOG_ENTER();
+
+    return;
 
     try
     {
@@ -3566,34 +3568,40 @@ int syncd_main(int argc, char **argv)
 
         while(true)
         {
-            swss::Selectable *sel = NULL;
+            try {
+                swss::Selectable *sel = NULL;
 
-            int result = s.select(&sel);
+                int result = s.select(&sel);
 
-            if (sel == restartQuery.get())
-            {
-                /*
-                 * This is actual a bad design, since selectable may pick up
-                 * multiple events from the queue, and after restart those
-                 * events will be forgoten since they were consumed already and
-                 * this may lead to forget populate object table which will
-                 * lead to unable to find some objects.
-                 */
+                if (sel == restartQuery.get())
+                {
+                    /*
+                     * This is actual a bad design, since selectable may pick up
+                     * multiple events from the queue, and after restart those
+                     * events will be forgoten since they were consumed already and
+                     * this may lead to forget populate object table which will
+                     * lead to unable to find some objects.
+                     */
 
-                shutdownType = handleRestartQuery(*restartQuery);
-                break;
+                    shutdownType = handleRestartQuery(*restartQuery);
+                    break;
+                }
+                else if (sel == flexCounter.get())
+                {
+                    processFlexCounterEvent(*(swss::ConsumerTable*)sel);
+                }
+                else if (sel == flexCounterGroup.get())
+                {
+                    processFlexCounterGroupEvent(*(swss::ConsumerTable*)sel);
+                }
+                else if (result == swss::Select::OBJECT)
+                {
+                    processEvent(*(swss::ConsumerTable*)sel);
+                }
             }
-            else if (sel == flexCounter.get())
+            catch(const std::exception &e)
             {
-                processFlexCounterEvent(*(swss::ConsumerTable*)sel);
-            }
-            else if (sel == flexCounterGroup.get())
-            {
-                processFlexCounterGroupEvent(*(swss::ConsumerTable*)sel);
-            }
-            else if (result == swss::Select::OBJECT)
-            {
-                processEvent(*(swss::ConsumerTable*)sel);
+                SWSS_LOG_ERROR("Runtime error: %s", e.what());
             }
         }
     }
